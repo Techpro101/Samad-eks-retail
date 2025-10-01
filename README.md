@@ -49,7 +49,7 @@ kubectl apply -f https://github.com/aws-containers/retail-store-sample-app/relea
 
 ## 🌐 Application Access
 
-**Live Application**: http://k8s-default-ui-8c6cd7bbdd-f08607c24d54e805.elb.us-east-1.amazonaws.com
+**Live Application**: http://k8s-default-ui-ca560ccdc3-f6ff5052acb84fe3.elb.us-east-1.amazonaws.com
 
 ## 👥 Developer Access
 

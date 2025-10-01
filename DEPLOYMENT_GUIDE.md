@@ -13,7 +13,7 @@ This deployment creates a production-grade EKS cluster on AWS with the following
 
 ### Application Access
 
-**Application URL**: http://k8s-default-ui-6e72e1b7e3-6a2fdb0933c0546f.elb.us-east-1.amazonaws.com/
+**Application URL**: http://k8s-default-ui-ca560ccdc3-f6ff5052acb84fe3.elb.us-east-1.amazonaws.com/
 
 The application includes:
 - **UI Service**: Java-based storefront
@@ -26,13 +26,13 @@ The application includes:
 
 #### Read-Only IAM User Credentials
 - **Username**: `retail-store-eks-readonly-dev`
-- **Access Key**: `AKIAWMFUPKUZN6EQ6O6S`
+- **Access Key**: ` AKIAQCHEWIOL3YWK7C4B`
 - **Secret Key**: (Available in Terraform output - marked as sensitive)
 
 #### Kubectl Configuration for Developers
 ```bash
 # Configure AWS CLI with read-only credentials
-aws configure set aws_access_key_id AKIAWMFUPKUZN6EQ6O6S
+aws configure set aws_access_key_id  AKIAQCHEWIOL3YWK7C4B
 aws configure set aws_secret_access_key <SECRET_KEY> 
 aws configure set region us-east-1
 
@@ -84,7 +84,7 @@ The deployment uses GitHub Actions with the following workflow:
 #### Initial Setup
 ```bash
 # Clone repository
-git clone https://github.com/omokarogabriel/gabriel-eks-retail-store2
+git clone https://github.com/Techpro101/Samad-eks-retail
 cd retail-store-sample-app/terraform/eks/minimal
 
 # Initialize Terraform with remote backend
