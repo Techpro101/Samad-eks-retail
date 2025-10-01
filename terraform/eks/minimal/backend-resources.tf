@@ -1,14 +1,14 @@
 # Backend resources already exist and are managed outside Terraform
-# S3 bucket: gabriel-eks-state-s3-bucket
-# DynamoDB table: retail-store-terraform-locks
+# S3 bucket: samad-eks-s3-bucket1001
+# DynamoDB table: samad-eks-s3-bucket1001-locks
 
 # Commented out to avoid conflicts with existing resources
 # resource "aws_s3_bucket" "terraform_state" {
-#   bucket = "gabriel-eks-state-s3-bucket"
+#   bucket = "samad-eks-s3-bucket1001"
 # }
 
 # resource "aws_dynamodb_table" "terraform_locks" {
-#   name           = "retail-store-terraform-locks"
+#   name           = "samad-eks-s3-bucket1001-locks"
 #   billing_mode   = "PAY_PER_REQUEST"
 #   hash_key       = "LockID"
 

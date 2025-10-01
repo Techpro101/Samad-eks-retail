@@ -41,3 +41,9 @@ variable "opentelemetry_enabled" {
   type        = bool
   default     = false
 }
+
+variable "manage_kubernetes_resources" {
+  description = "When true, create Kubernetes resources (namespaces, roles, bindings, etc.) from this module.\nSet to false to perform a control-plane-only apply and then enable in a second apply when the cluster is ready."
+  type        = bool
+  default     = false
+}

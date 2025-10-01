@@ -3,7 +3,7 @@
 echo "🚀 Initializing Terraform Backend"
 echo "=================================="
 
-REGION="eu-north-1"
+REGION="us-east-1"
 ENV_NAME="retail-store"
 
 # Step 1: Initialize without backend to create S3 bucket and DynamoDB table
@@ -22,7 +22,7 @@ echo "   DynamoDB Table: $TABLE_NAME"
 # Step 3: Configure backend
 echo "🔧 Configuring remote backend..."
 terraform init -backend-config="bucket=$BUCKET_NAME" \
-                -backend-config="key=terraform.tfstate" \
+                -backend-config="key=state/eks-cluster.tfstate" \
                 -backend-config="region=$REGION" \
                 -backend-config="dynamodb_table=$TABLE_NAME" \
                 -backend-config="encrypt=true"

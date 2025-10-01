@@ -40,11 +40,11 @@ kubectl get svc --all-namespaces | grep LoadBalancer
 ### Step 2: Clean Up AWS LoadBalancers
 ```bash
 # List and delete EKS-created LoadBalancers
-aws elbv2 describe-load-balancers --region eu-north-1 \
+aws elbv2 describe-load-balancers --region us-east-1 \
   --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-`)].LoadBalancerArn' \
   --output text | while read lb_arn; do
     echo "Deleting LoadBalancer: $lb_arn"
-    aws elbv2 delete-load-balancer --load-balancer-arn $lb_arn --region eu-north-1
+    aws elbv2 delete-load-balancer --load-balancer-arn $lb_arn --region us-east-1
 done
 ```
 
@@ -64,12 +64,12 @@ terraform destroy -auto-approve
 ```bash
 # If VPC deletion fails, clean up security groups
 VPC_ID=$(terraform output -raw vpc_id 2>/dev/null)
-aws ec2 describe-security-groups --region eu-north-1 \
+aws ec2 describe-security-groups --region us-east-1 \
   --filters "Name=vpc-id,Values=$VPC_ID" \
   --query 'SecurityGroups[?GroupName!=`default`].GroupId' \
   --output text | tr '\t' '\n' | while read sg_id; do
     echo "Deleting security group: $sg_id"
-    aws ec2 delete-security-group --group-id $sg_id --region eu-north-1
+    aws ec2 delete-security-group --group-id $sg_id --region us-east-1
 done
 
 # Retry terraform destroy
@@ -83,7 +83,7 @@ terraform destroy -auto-approve
 **Solution:** 
 ```bash
 # Check for remaining network interfaces
-aws ec2 describe-network-interfaces --region eu-north-1 \
+aws ec2 describe-network-interfaces --region us-east-1 \
   --filters "Name=vpc-id,Values=<VPC_ID>" \
   --query 'NetworkInterfaces[].NetworkInterfaceId'
 
@@ -111,13 +111,13 @@ aws ec2 delete-network-interface --network-interface-id <ENI_ID>
 ### Check Remaining Resources
 ```bash
 # Check EKS cluster
-aws eks describe-cluster --name retail-store --region eu-north-1
+aws eks describe-cluster --name retail-store --region us-east-1
 
 # Check LoadBalancers
-aws elbv2 describe-load-balancers --region eu-north-1
+aws elbv2 describe-load-balancers --region us-east-1
 
 # Check VPC resources
-aws ec2 describe-vpcs --region eu-north-1 --filters "Name=tag:Name,Values=*retail-store*"
+aws ec2 describe-vpcs --region us-east-1 --filters "Name=tag:Name,Values=*retail-store*"
 ```
 
 ### Verify Complete Cleanup
@@ -126,7 +126,7 @@ aws ec2 describe-vpcs --region eu-north-1 --filters "Name=tag:Name,Values=*retai
 kubectl get nodes 2>/dev/null || echo "Cluster successfully deleted"
 
 # Check AWS resources
-aws resourcegroupstaggingapi get-resources --region eu-north-1 \
+aws resourcegroupstaggingapi get-resources --region us-east-1 \
   --tag-filters Key=environment-name,Values=retail-store
 ```
 

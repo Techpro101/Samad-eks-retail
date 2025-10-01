@@ -1,4 +1,5 @@
 resource "kubernetes_namespace_v1" "adot" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name = "opentelemetry-operator-system"
 
@@ -28,9 +29,10 @@ resource "kubernetes_namespace_v1" "adot" {
 # }
 
 resource "kubernetes_role_v1" "adot" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name      = "eks:addon-manager"
-    namespace = kubernetes_namespace_v1.adot.metadata[0].name
+    namespace = kubernetes_namespace_v1.adot[0].metadata[0].name
   }
 
   rule {
@@ -92,9 +94,10 @@ resource "kubernetes_role_v1" "adot" {
 }
 
 resource "kubernetes_role_binding_v1" "adot" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name      = "eks:addon-manager"
-    namespace = kubernetes_namespace_v1.adot.metadata[0].name
+    namespace = kubernetes_namespace_v1.adot[0].metadata[0].name
   }
 
   subject {
@@ -110,6 +113,7 @@ resource "kubernetes_role_binding_v1" "adot" {
 }
 
 resource "kubernetes_cluster_role_v1" "adot" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name = "eks:addon-manager-otel"
   }
@@ -123,7 +127,7 @@ resource "kubernetes_cluster_role_v1" "adot" {
   rule {
     api_groups     = [""]
     resources      = ["namespaces"]
-    resource_names = [kubernetes_namespace_v1.adot.metadata[0].name]
+    resource_names = [kubernetes_namespace_v1.adot[0].metadata[0].name]
     verbs          = ["create", "delete", "get", "list", "patch", "update", "watch"]
   }
   rule {
@@ -241,6 +245,7 @@ resource "kubernetes_cluster_role_v1" "adot" {
 }
 
 resource "kubernetes_cluster_role_binding_v1" "adot" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name = "eks:addon-manager-otel"
   }
@@ -257,6 +262,7 @@ resource "kubernetes_cluster_role_binding_v1" "adot" {
 }
 
 module "iam_assumable_role_adot_amp" {
+  count        = var.manage_kubernetes_resources ? 1 : 0
   source       = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version      = "~> 5.58.0"
   create_role  = true
@@ -265,10 +271,11 @@ module "iam_assumable_role_adot_amp" {
   role_policy_arns = [
     "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSXRayDaemonWriteAccess"
   ]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:${kubernetes_namespace_v1.adot.metadata[0].name}:adot-col-otlp-ingest"]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:${kubernetes_namespace_v1.adot[0].metadata[0].name}:adot-col-otlp-ingest"]
 }
 
 module "iam_assumable_role_adot_logs" {
+  count        = var.manage_kubernetes_resources ? 1 : 0
   source       = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version      = "~> 5.58.0"
   create_role  = true
@@ -277,7 +284,7 @@ module "iam_assumable_role_adot_logs" {
   role_policy_arns = [
     "arn:${data.aws_partition.current.partition}:iam::aws:policy/CloudWatchAgentServerPolicy"
   ]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:${kubernetes_namespace_v1.adot.metadata[0].name}:adot-col-container-logs"]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:${kubernetes_namespace_v1.adot[0].metadata[0].name}:adot-col-container-logs"]
 }
 
 locals {
@@ -287,7 +294,7 @@ locals {
     "otlpIngest": {
       "serviceAccount": {
         "annotations": {
-          "eks.amazonaws.com/role-arn": "${module.iam_assumable_role_adot_amp.iam_role_arn}"
+          "eks.amazonaws.com/role-arn": "${try(module.iam_assumable_role_adot_amp[0].iam_role_arn, "")}"
         }
       },
       "pipelines": {

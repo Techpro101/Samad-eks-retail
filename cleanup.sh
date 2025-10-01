@@ -3,7 +3,7 @@
 echo "🧹 Manual AWS Cleanup Script"
 echo "=============================="
 
-REGION="eu-north-1"
+REGION="us-east-1"
 CLUSTER_NAME="retail-store"
 
 # Wait for node groups to be deleted

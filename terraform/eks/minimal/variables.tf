@@ -15,3 +15,9 @@ variable "opentelemetry_enabled" {
   type        = bool
   default     = false
 }
+
+variable "manage_kubernetes_resources" {
+  description = "When true, the module will create Kubernetes (k8s/helm) resources. Set to false for control-plane-only apply." 
+  type    = bool
+  default = false
+}

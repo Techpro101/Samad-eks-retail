@@ -1,5 +1,5 @@
 resource "kubernetes_namespace_v1" "istio" {
-  count = var.istio_enabled ? 1 : 0
+  count = (var.istio_enabled && var.manage_kubernetes_resources) ? 1 : 0
 
   metadata {
     name = "istio-system"
@@ -7,7 +7,7 @@ resource "kubernetes_namespace_v1" "istio" {
 }
 
 resource "helm_release" "istio_base" {
-  count = var.istio_enabled ? 1 : 0
+  count = (var.istio_enabled && var.manage_kubernetes_resources) ? 1 : 0
 
   name       = "istio-base"
   repository = "https://istio-release.storage.googleapis.com/charts"
@@ -22,7 +22,7 @@ resource "helm_release" "istio_base" {
 }
 
 resource "helm_release" "istiod" {
-  count = var.istio_enabled ? 1 : 0
+  count = (var.istio_enabled && var.manage_kubernetes_resources) ? 1 : 0
 
   depends_on = [
     helm_release.istio_base
@@ -41,7 +41,7 @@ resource "helm_release" "istiod" {
 }
 
 resource "kubernetes_namespace_v1" "istio_ingress" {
-  count = var.istio_enabled ? 1 : 0
+  count = (var.istio_enabled && var.manage_kubernetes_resources) ? 1 : 0
 
   metadata {
     name = "istio-ingress"
@@ -49,7 +49,7 @@ resource "kubernetes_namespace_v1" "istio_ingress" {
 }
 
 resource "helm_release" "istio_ingress" {
-  count = var.istio_enabled ? 1 : 0
+  count = (var.istio_enabled && var.manage_kubernetes_resources) ? 1 : 0
 
   depends_on = [
     helm_release.istiod,

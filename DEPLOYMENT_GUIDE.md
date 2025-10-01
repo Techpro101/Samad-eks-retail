@@ -13,7 +13,7 @@ This deployment creates a production-grade EKS cluster on AWS with the following
 
 ### Application Access
 
-**Application URL**: http://k8s-default-ui-6e72e1b7e3-6a2fdb0933c0546f.elb.eu-north-1.amazonaws.com/
+**Application URL**: http://k8s-default-ui-6e72e1b7e3-6a2fdb0933c0546f.elb.us-east-1.amazonaws.com/
 
 The application includes:
 - **UI Service**: Java-based storefront
@@ -34,10 +34,10 @@ The application includes:
 # Configure AWS CLI with read-only credentials
 aws configure set aws_access_key_id AKIAWMFUPKUZN6EQ6O6S
 aws configure set aws_secret_access_key <SECRET_KEY> 
-aws configure set region eu-north-1
+aws configure set region us-east-1
 
 # Update kubeconfig
-aws eks --region eu-north-1 update-kubeconfig --name retail-store
+aws eks --region us-east-1 update-kubeconfig --name retail-store
 
 # Test access (read-only operations)
 kubectl get pods
@@ -62,7 +62,7 @@ The user **cannot**:
 
 #### Core Infrastructure
 - **VPC**: `10.0.0.0/16` with public/private subnets
-- **EKS Cluster**: `retail-store` in `eu-north-1`
+- **EKS Cluster**: `retail-store` in `us-east-1`
 - **Node Groups**: 3 managed groups with `m5.large` instances
 - **Load Balancer**: AWS Load Balancer Controller for ingress
 
@@ -95,7 +95,7 @@ chmod +x init-backend.sh
 terraform apply
 
 # Configure kubectl
-aws eks --region eu-north-1 update-kubeconfig --name retail-store
+aws eks --region us-east-1 update-kubeconfig --name retail-store
 
 # Deploy application
 kubectl apply -f https://github.com/aws-containers/retail-store-sample-app/releases/latest/download/kubernetes.yaml
@@ -116,8 +116,8 @@ kubectl apply -f https://github.com/aws-containers/retail-store-sample-app/relea
 kubectl delete -f https://github.com/aws-containers/retail-store-sample-app/releases/latest/download/kubernetes.yaml
 
 # Step 2: Clean up LoadBalancers manually if needed
-aws elbv2 describe-load-balancers --region eu-north-1 --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-`)].LoadBalancerArn' --output text | while read lb_arn; do
-  aws elbv2 delete-load-balancer --load-balancer-arn $lb_arn --region eu-north-1
+aws elbv2 describe-load-balancers --region us-east-1 --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-`)].LoadBalancerArn' --output text | while read lb_arn; do
+  aws elbv2 delete-load-balancer --load-balancer-arn $lb_arn --region us-east-1
 done
 
 # Step 3: Wait for cleanup, then destroy infrastructure

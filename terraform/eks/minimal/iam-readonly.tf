@@ -37,6 +37,7 @@ resource "aws_iam_user_policy_attachment" "eks_readonly_dev" {
 
 # Kubernetes RBAC for read-only access
 resource "kubernetes_cluster_role" "readonly" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name = "eks-readonly"
   }
@@ -61,6 +62,7 @@ resource "kubernetes_cluster_role" "readonly" {
 }
 
 resource "kubernetes_cluster_role_binding" "readonly" {
+  count = var.manage_kubernetes_resources ? 1 : 0
   metadata {
     name = "eks-readonly-binding"
   }
@@ -68,7 +70,7 @@ resource "kubernetes_cluster_role_binding" "readonly" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.readonly.metadata[0].name
+    name      = kubernetes_cluster_role.readonly[0].metadata[0].name
   }
 
   subject {
